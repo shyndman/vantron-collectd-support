@@ -1,0 +1,59 @@
+[project]
+name = "vantron-collectd-support"
+version = "0.0.0"
+description = ""
+authors = [{name = "Scott Hyndman", email = "scotty.hyndman@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.12,<3.16"
+dependencies = [
+    "ha-mqtt-discoverable @ git+https://github.com/shyndman/ha-mqtt-discoverable.git@main",
+    "pydantic (>=2.10.6,<3.0.0)",
+    "loguru (>=0.7.3,<0.8.0)",
+    "stringcase (>=1.2.0,<2.0.0)",
+]
+
+[project.scripts]
+add-discovery-topics = "vantron_collectd_support:add_discovery_topics"
+
+[tool.poetry]
+packages = [{include = "vantron_collectd_support", from = "src"}]
+
+[tool.pre-commit]
+default_install_hook_types=["pre-commit"]
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.9.9"
+pre-commit = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "N",  # PEP8 naming convetions
+    "D",  # pydocstyle
+]
+ignore = [
+    "C901", # too complex
+    "W191", # indentation contains tabs
+    "D401", # imperative mood
+    "D103",
+    "D104",
+    "D100",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
