@@ -1,6 +1,7 @@
 from collections.abc import Generator
 from functools import partial
 
+from ha_mqtt_discoverable.device_class import BinarySensorDeviceClass, SensorDeviceClass
 from ha_mqtt_discoverable.sensors import BinarySensorInfo, DeviceInfo, EntityInfo, SensorInfo
 from stringcase import capitalcase, spinalcase
 
@@ -29,7 +30,7 @@ def uptime_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicP
             SensorInfo(
                 name="Up Since",
                 device=device,
-                device_class="timestamp",
+                device_class=SensorDeviceClass.TIMESTAMP,
                 value_template="{%- set now_ts = now() %}\n"
                 + "{%- set now_ts = now_ts.replace(microsecond=0, second=0) %}\n"
                 + "{{ (value.split(':')[1].split('\0')[0]|int // 60 * 60) | string | as_timedelta  * -1 + now_ts }}",
@@ -83,7 +84,7 @@ def cpu_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath
             SensorInfo(
                 name="CPU Temperature",
                 device=device,
-                device_class="temperature",
+                device_class=SensorDeviceClass.TEMPERATURE,
                 unit_of_measurement="°C",
                 suggested_display_precision=1,
                 unique_id="",
@@ -97,7 +98,6 @@ def cpu_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath
 def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
     shared_args = {
         "device": device,
-        "device_class": "data_size",
         "unit_of_measurement": "%",
         "suggested_display_precision": 1,
         "unique_id": "",
@@ -121,7 +121,7 @@ def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPat
 def memory_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
     shared_args = {
         "device": device,
-        "device_class": "data_size",
+        "device_class": SensorDeviceClass.DATA_SIZE,
         "unit_of_measurement": "%",
         "suggested_display_precision": 1,
         "unique_id": "",
@@ -153,7 +153,7 @@ def disk_free_topics(
 ) -> Generator[tuple[EntityInfo, StateTopicPath]]:
     shared_args = {
         "device": device,
-        "device_class": "data_size",
+        "device_class": SensorDeviceClass.DATA_SIZE,
         "unit_of_measurement": "B",
         "suggested_display_precision": 0,
         "unique_id": "",
@@ -181,7 +181,7 @@ def network_topics(device: DeviceInfo, ping_host="1.1.1.1") -> Generator[tuple[E
             BinarySensorInfo(
                 name="Network Online",
                 device=device,
-                device_class="connectivity",
+                device_class=BinarySensorDeviceClass.CONNECTIVITY,
                 unique_id="",
                 payload_on="ON",
                 payload_off="OFF",
@@ -194,7 +194,7 @@ def network_topics(device: DeviceInfo, ping_host="1.1.1.1") -> Generator[tuple[E
             SensorInfo(
                 name=f"{ping_host} Avg. Ping Time",
                 device=device,
-                device_class="duration",
+                device_class=SensorDeviceClass.DURATION,
                 unit_of_measurement="ms",
                 suggested_display_precision=1,
                 unique_id="",
@@ -222,7 +222,7 @@ def network_topics(device: DeviceInfo, ping_host="1.1.1.1") -> Generator[tuple[E
             SensorInfo(
                 name="Wired Outgoing Traffic Rate",
                 device=device,
-                device_class="data_rate",
+                device_class=SensorDeviceClass.DATA_RATE,
                 unit_of_measurement="B/s",
                 suggested_display_precision=1,
                 icon="mdi:router-network",
@@ -237,7 +237,7 @@ def network_topics(device: DeviceInfo, ping_host="1.1.1.1") -> Generator[tuple[E
             SensorInfo(
                 name="Wired Incoming Traffic Rate",
                 device=device,
-                device_class="data_rate",
+                device_class=SensorDeviceClass.DATA_RATE,
                 unit_of_measurement="B/s",
                 suggested_display_precision=1,
                 icon="mdi:router-network",
@@ -252,7 +252,7 @@ def network_topics(device: DeviceInfo, ping_host="1.1.1.1") -> Generator[tuple[E
             SensorInfo(
                 name="Wireless Outgoing Traffic Rate",
                 device=device,
-                device_class="data_rate",
+                device_class=SensorDeviceClass.DATA_RATE,
                 unit_of_measurement="B/s",
                 suggested_display_precision=1,
                 icon="mdi:router-network-wireless",
@@ -267,7 +267,7 @@ def network_topics(device: DeviceInfo, ping_host="1.1.1.1") -> Generator[tuple[E
             SensorInfo(
                 name="Wireless Incoming Traffic Rate",
                 device=device,
-                device_class="data_rate",
+                device_class=SensorDeviceClass.DATA_RATE,
                 unit_of_measurement="B/s",
                 suggested_display_precision=1,
                 icon="mdi:router-network-wireless",

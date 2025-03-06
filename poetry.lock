@@ -98,7 +98,7 @@ pydantic = "2.10.6"
 type = "git"
 url = "https://github.com/shyndman/ha-mqtt-discoverable.git"
 reference = "main"
-resolved_reference = "7988b3536f7bb3bb1cd84cd45838394264a4ecca"
+resolved_reference = "bf5c0bfcbf2effd122b5f714f3fd2f194680b0b4"
 
 [[package]]
 name = "identify"
