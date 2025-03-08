@@ -22,6 +22,7 @@ from vantron_collectd_support.util import _nn_
 
 
 def publish_entity_discovery():
+    """Publishes MQTT discovery topics for CollectD sensors."""
     logger.info("Adding CollectD Discovery Topics")
 
     mqtt = Settings.MQTT(host="0.0.0.0", client_name=CLIENT_ID, state_prefix=STATE_PREFIX)
@@ -34,6 +35,7 @@ def publish_entity_discovery():
 
 
 def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """Yields sensor discovery topic tuples for a Raspberry Pi device."""
     device = DeviceInfo(
         name="Vantron",
         identifiers=["7135376c756a5f2a"],
@@ -50,6 +52,7 @@ def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
 
 
 def router_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """Yields sensor discovery topic tuples for a router device."""
     device = DeviceInfo(
         name="Vnet",
         identifiers=["yx87fec"],
@@ -67,11 +70,13 @@ def router_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
 
 
 def make_topic_name(device: DeviceInfo, entity_topic: str):
+    """Creates a callable that returns a formatted MQTT topic string."""
     topic = f"collectd/{spinalcase(device.name)}/{entity_topic}"
     return functools.partial(lambda _, topic: topic, topic=topic)
 
 
 def build_discoverable(entity: EntityInfo, mqtt: Settings.MQTT, topic_gen):
+    """Creates a discoverable MQTT sensor entity based on the provided entity type."""
     match entity:
         case SensorInfo():
             return Sensor(Settings(mqtt=mqtt, entity=entity), make_state_topic=topic_gen)

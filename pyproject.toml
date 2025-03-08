@@ -24,32 +24,3 @@ allow-direct-references = true
 
 [tool.pre-commit]
 default_install_hook_types = ["pre-commit"]
-
-[tool.ruff]
-line-length = 120
-
-[tool.ruff.lint]
-select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
-    "C4", # flake8-comprehensions
-    "N",  # PEP8 naming convetions
-    "D",  # pydocstyle
-]
-ignore = [
-    "C901", # too complex
-    "W191", # indentation contains tabs
-    "D401", # imperative mood
-    "D103",
-    "D104",
-    "D100",
-]
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
-
-[tool.ruff.lint.isort]
-combine-as-imports = true
