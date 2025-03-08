@@ -23,5 +23,8 @@ build-backend = "hatchling.build"
 [tool.hatch.metadata]
 allow-direct-references = true
 
+[tool.pyright]
+stubPath = "typings/"
+
 [tool.pre-commit]
 default_install_hook_types = ["pre-commit"]
