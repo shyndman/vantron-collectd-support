@@ -41,7 +41,7 @@ def uptime_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicP
     )
 
 
-def cpu_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+def cpu_topics(device: DeviceInfo, include_freq=False) -> Generator[tuple[EntityInfo, StateTopicPath]]:
     shared_args = {
         "device": device,
         "unit_of_measurement": "%",
@@ -93,6 +93,21 @@ def cpu_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath
         ),
         "thermal-thermal_zone0/temperature",
     )
+    if include_freq:
+        yield (
+            _populate(
+                SensorInfo(
+                    name="CPU Frequency",
+                    device=device,
+                    device_class=SensorDeviceClass.FREQUENCY,
+                    unit_of_measurement="GHz",
+                    suggested_display_precision=2,
+                    unique_id="",
+                    value_template=_value_template_for_index(1, transform_expr=" / 1000000.0", cast_expr="| float"),
+                )
+            ),
+            "cpu/cpufreq",
+        )
 
 
 def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
