@@ -36,7 +36,15 @@ def publish_entity_discovery():
 
 
 def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
-    """Yields sensor discovery topic tuples for a Raspberry Pi device."""
+    """
+    Yields sensor discovery topic tuples for a Raspberry Pi device.
+    
+    This generator creates a DeviceInfo instance for a Raspberry Pi equipped with
+    unique identifiers, model, manufacturer, and network connection details. It
+    yields tuples of sensor discovery topics for system uptime, CPU metrics (including
+    frequency and fan speed), load, memory, power, and disk free space for the root
+    filesystem.
+    """
     device = DeviceInfo(
         name="Vantron Pi",
         identifiers=["7135376c756a5f2a", "vantron"],
