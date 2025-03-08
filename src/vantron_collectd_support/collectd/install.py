@@ -27,12 +27,18 @@ def run():
     conf = importlib.resources.read_text(conf_package, COLLECTD_CONFIG_RESOURCE_BASENAME)
     venv_path = os.getenv(VENV_PATH_ENV_NAME)
     if not venv_path:
-        logger.warning(f"{VENV_PATH_ENV_NAME} environment variable not set. Virtual environment path may be incorrect.")
+        raise EnvironmentError(
+            f"{VENV_PATH_ENV_NAME} environment variable not set. Virtual environment path may be incorrect."
+        )
+
+    venv_packages_path = (
+        next((Path(venv_path) / "lib").glob("python3.*/", case_sensitive=True)) / "site-packages"
+    ).resolve()
 
     formatted_conf = conf.format(
         **{
             SRC_PATH_TEMPLATE_VAR_NAME: find_src_dir().as_posix(),
-            VENV_PATH_TEMPLATE_VAR_NAME: venv_path,
+            VENV_PATH_TEMPLATE_VAR_NAME: venv_packages_path.as_posix(),
         }
     )
 
