@@ -7,7 +7,8 @@ from ha_mqtt_discoverable.sensors import BinarySensor, BinarySensorInfo, DeviceI
 from loguru import logger
 from stringcase import spinalcase
 
-from vantron_collectd_support.collectd import (
+from ..util import _nn_
+from .collectd import (
     DISK_FREE_ROOT_FS,
     StateTopicPath,
     cpu_topics,
@@ -17,8 +18,7 @@ from vantron_collectd_support.collectd import (
     network_topics,
     uptime_topics,
 )
-from vantron_collectd_support.const import CLIENT_ID, STATE_PREFIX
-from vantron_collectd_support.util import _nn_
+from .const import CLIENT_ID, STATE_PREFIX
 
 
 def publish_entity_discovery():
