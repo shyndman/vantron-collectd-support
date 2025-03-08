@@ -22,7 +22,13 @@ from .const import CLIENT_ID, STATE_PREFIX
 
 
 def publish_entity_discovery():
-    """Publishes MQTT discovery topics for CollectD sensors."""
+    """
+    Publishes MQTT discovery topics for CollectD sensors.
+    
+    Initialises an MQTT client using predefined settings and logs the start of the discovery process.
+    Iterates over sensor entities for both Raspberry Pi and router devices, builds each discoverable
+    configuration, writes it to MQTT, and waits for publish confirmation where applicable.
+    """
     logger.info("Adding CollectD Discovery Topics")
 
     mqtt = Settings.MQTT(host="0.0.0.0", client_name=CLIENT_ID, state_prefix=STATE_PREFIX)

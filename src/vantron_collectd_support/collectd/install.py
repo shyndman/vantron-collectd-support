@@ -22,6 +22,13 @@ COLLECTD_CONFIG_PATH = "/etc/collectd/collectd.conf.d/vantron.collectd.conf"
 
 
 def run():
+    """
+    Installs the CollectD plugin configuration.
+    
+    Reads a configuration template from package resources, substitutes the source directory and virtual
+    environment paths, and writes the resulting configuration file to the designated location. Logs a warning
+    if the environment variable for the virtual environment path is not set.
+    """
     logger.info("Installing CollectD plugin")
 
     conf = importlib.resources.read_text(conf_package, COLLECTD_CONFIG_RESOURCE_BASENAME)
@@ -40,6 +47,13 @@ def run():
 
 
 def write_conf(formatted_conf):
+    """
+    Write formatted configuration to the CollectD config file.
+    
+    Logs the configuration details and writes the provided configuration string to the
+    file at COLLECTD_CONFIG_PATH. If a PermissionError occurs, the function logs the
+    exception and recommends running the command with elevated privileges.
+    """
     logger.info(f"Config:\n\n{formatted_conf}")
     try:
         logger.info(f"Writing to {COLLECTD_CONFIG_PATH}")
@@ -52,4 +66,11 @@ def write_conf(formatted_conf):
 
 
 def find_src_dir() -> Path:
+    """
+    Return the absolute path of the source directory for the vantron package.
+    
+    This function locates the file for the vantron package using the inspect module,
+    ascends two directory levels from the file location, and resolves the resulting
+    path to an absolute path.
+    """
     return Path(inspect.getfile(vantron_package)).parents[1].resolve()
