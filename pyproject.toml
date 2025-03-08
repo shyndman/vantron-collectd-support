@@ -14,6 +14,7 @@ dependencies = [
 
 [project.scripts]
 publish-discovery-topics = "vantron_collectd_support.hass:publish_entity_discovery"
+install-collectd-plugin = "vantron_collectd_support.collectd.install:run"
 
 [build-system]
 requires = ["hatchling"]
