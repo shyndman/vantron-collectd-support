@@ -32,7 +32,7 @@ wheels = [
 [[package]]
 name = "ha-mqtt-discoverable"
 version = "0.16.4"
-source = { git = "https://github.com/shyndman/ha-mqtt-discoverable.git?rev=main#bf5c0bfcbf2effd122b5f714f3fd2f194680b0b4" }
+source = { git = "https://github.com/shyndman/ha-mqtt-discoverable.git?rev=main#76d5d702f4f44fbd5dedeb43b84e5fe16be48547" }
 dependencies = [
     { name = "gitlike-commands" },
     { name = "paho-mqtt" },
