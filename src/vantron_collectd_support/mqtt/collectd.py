@@ -50,7 +50,9 @@ def uptime_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicP
     )
 
 
-def cpu_topics(device: DeviceInfo, include_freq=False) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+def cpu_topics(
+    device: DeviceInfo, include_freq=False, include_fan_speed=False
+) -> Generator[tuple[EntityInfo, StateTopicPath]]:
     shared_args = {
         "device": device,
         "unit_of_measurement": "%",
@@ -117,6 +119,22 @@ def cpu_topics(device: DeviceInfo, include_freq=False) -> Generator[tuple[Entity
             ),
             "cpu/cpufreq",
         )
+    if include_fan_speed:
+        yield (
+            _populate(
+                SensorInfo(
+                    name="CPU Fan Speed",
+                    device=device,
+                    device_class=SensorDeviceClass.FREQUENCY,
+                    unit_of_measurement="Hz",
+                    suggested_display_precision=0,
+                    icon="mdi:fan",
+                    unique_id="",
+                    value_template=_value_template_for_index(1, cast_expr="| int(0)"),
+                )
+            ),
+            "cpu/fanspeed",
+        )
 
 
 def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
@@ -124,6 +142,7 @@ def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPat
         "device": device,
         "unit_of_measurement": "%",
         "suggested_display_precision": 1,
+        "icon": "mdi:chart-histogram",
         "unique_id": "",
     }
 
