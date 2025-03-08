@@ -4,7 +4,7 @@ version = "0.0.0"
 description = ""
 authors = [{name = "Scott Hyndman", email = "scotty.hyndman@gmail.com"}]
 readme = "README.md"
-requires-python = ">=3.12,<3.16"
+requires-python = ">=3.13,<3.16"
 dependencies = [
     "ha-mqtt-discoverable @ git+https://github.com/shyndman/ha-mqtt-discoverable.git@main",
     "pydantic (>=2.10.6,<3.0.0)",
