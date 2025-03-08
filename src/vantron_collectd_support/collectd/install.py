@@ -24,11 +24,18 @@ COLLECTD_CONFIG_PATH = "/etc/collectd/collectd.conf.d/vantron.collectd.conf"
 def run():
     logger.info("Installing CollectD plugin")
 
+def run():
+    logger.info("Installing CollectD plugin")
+
     conf = importlib.resources.read_text(conf_package, COLLECTD_CONFIG_RESOURCE_BASENAME)
+    venv_path = os.getenv(VENV_PATH_ENV_NAME)
+    if not venv_path:
+        logger.warning(f"{VENV_PATH_ENV_NAME} environment variable not set. Virtual environment path may be incorrect.")
+    
     formatted_conf = conf.format(
         **{
             SRC_PATH_TEMPLATE_VAR_NAME: find_src_dir().as_posix(),
-            VENV_PATH_TEMPLATE_VAR_NAME: os.getenv(VENV_PATH_ENV_NAME),
+            VENV_PATH_TEMPLATE_VAR_NAME: venv_path,
         }
     )
 
