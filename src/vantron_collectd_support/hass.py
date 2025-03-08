@@ -22,6 +22,14 @@ from vantron_collectd_support.util import _nn_
 
 
 def publish_entity_discovery():
+    """
+    Publishes MQTT discovery topics for CollectD sensors.
+    
+    Initializes an MQTT connection using pre-configured settings and iterates over sensor
+    entities from both Raspberry Pi and router sources. For each sensor, it builds a 
+    discoverable object, writes its MQTT configuration, and waits for the publish to complete
+    if a publish operation is returned.
+    """
     logger.info("Adding CollectD Discovery Topics")
 
     mqtt = Settings.MQTT(host="0.0.0.0", client_name=CLIENT_ID, state_prefix=STATE_PREFIX)
@@ -34,6 +42,11 @@ def publish_entity_discovery():
 
 
 def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """
+    Yields sensor discovery topic tuples for a Raspberry Pi device.
+    
+    This function creates a DeviceInfo instance with predefined Raspberry Pi details and yields tuples containing sensor entity information and corresponding state topic paths for system metrics such as uptime, CPU usage, load, memory utilization, and free disk space.
+    """
     device = DeviceInfo(
         name="Vantron",
         identifiers=["7135376c756a5f2a"],
@@ -50,6 +63,16 @@ def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
 
 
 def router_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """
+    Generates sensor topics for a router device.
+    
+    Constructs a DeviceInfo instance representing a router and yields sensor topic tuples
+    covering uptime, CPU, load, memory, disk space, and network metrics.
+    
+    Yields:
+        tuple[EntityInfo, StateTopicPath]: A sensor topic tuple containing the sensor
+        entity information and the corresponding state topic path.
+    """
     device = DeviceInfo(
         name="Vnet",
         identifiers=["yx87fec"],
@@ -67,11 +90,26 @@ def router_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
 
 
 def make_topic_name(device: DeviceInfo, entity_topic: str):
+    """
+    Construct a callable that returns a formatted MQTT topic string.
+    
+    This function builds a topic string in the format
+    "collectd/{device_name}/{entity_topic}", where the device's name is converted to spinal case.
+    It returns a callable (using functools.partial) that ignores its input and always returns the
+    constructed topic.
+    """
     topic = f"collectd/{spinalcase(device.name)}/{entity_topic}"
     return functools.partial(lambda _, topic: topic, topic=topic)
 
 
 def build_discoverable(entity: EntityInfo, mqtt: Settings.MQTT, topic_gen):
+    """
+    Builds a discoverable MQTT sensor entity.
+    
+    Based on whether the provided entity is a SensorInfo or BinarySensorInfo, this
+    function returns a Sensor or BinarySensor instance configured with the given MQTT
+    settings and state topic generator. Raises a ValueError if the entity type is unsupported.
+    """
     match entity:
         case SensorInfo():
             return Sensor(Settings(mqtt=mqtt, entity=entity), make_state_topic=topic_gen)
