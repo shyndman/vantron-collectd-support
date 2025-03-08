@@ -52,4 +52,4 @@ def write_conf(formatted_conf):
 
 
 def find_src_dir() -> Path:
-    return Path(inspect.getfile(vantron_package)).parent.resolve()
+    return Path(inspect.getfile(vantron_package)).parents[1].resolve()
