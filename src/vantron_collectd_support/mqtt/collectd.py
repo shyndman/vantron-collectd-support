@@ -1,5 +1,6 @@
 from collections.abc import Generator
 from functools import partial
+from textwrap import dedent
 
 from ha_mqtt_discoverable.device_class import BinarySensorDeviceClass, SensorDeviceClass
 from ha_mqtt_discoverable.sensors import BinarySensorInfo, DeviceInfo, EntityInfo, SensorInfo
@@ -13,7 +14,8 @@ type StateTopicPath = str
 
 def _populate(entity: EntityInfo):
     entity.object_id = spinalcase(entity.name.lower())
-    entity.unique_id = spinalcase(f"{_nn_(entity.device).name} {entity.name}".lower())
+    device = _nn_(entity.device)
+    entity.unique_id = spinalcase(f"{_nn_(device.identifiers)[-1]} {entity.name}".lower())
     if entity.expire_after is not None:
         entity.expire_after = 120  # seconds
 
@@ -31,9 +33,16 @@ def uptime_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicP
                 name="Up Since",
                 device=device,
                 device_class=SensorDeviceClass.TIMESTAMP,
-                value_template="{%- set now_ts = now() %}\n"
-                + "{%- set now_ts = now_ts.replace(microsecond=0, second=0) %}\n"
-                + "{{ (value.split(':')[1].split('\0')[0]|int // 60 * 60) | string | as_timedelta  * -1 + now_ts }}",
+                value_template=dedent("""
+                {%- set now_ts = now() %}
+                {%- set now_ts = now_ts.replace(microsecond=0, second=0) %}
+                {%- set value_parts = value.split(':') %}
+                {%- if value_parts|length >= 2 %}
+                {{ (value_parts[1].split('\u0000')[0]|int // 60 * 60) | string | as_timedelta  * -1 + now_ts }}
+                {%- else %}
+                none
+                {%- endif %}
+                """),
                 unique_id="",
             )
         ),
@@ -136,7 +145,6 @@ def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPat
 def memory_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
     shared_args = {
         "device": device,
-        "device_class": SensorDeviceClass.DATA_SIZE,
         "unit_of_measurement": "%",
         "suggested_display_precision": 1,
         "unique_id": "",
@@ -159,6 +167,23 @@ def memory_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicP
     yield (
         _populate(SensorInfo(name="Memory Percent Used", **shared_args)),
         "memory/percent-used",
+    )
+
+
+def power_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    yield (
+        _populate(
+            SensorInfo(
+                name="Power Use",
+                device=device,
+                device_class=SensorDeviceClass.POWER,
+                unit_of_measurement="W",
+                suggested_display_precision=2,
+                unique_id="",
+                value_template=_value_template_for_index(1),
+            )
+        ),
+        "power_use/gauge",
     )
 
 

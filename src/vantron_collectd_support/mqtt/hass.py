@@ -16,6 +16,7 @@ from .collectd import (
     load_topics,
     memory_topics,
     network_topics,
+    power_topics,
     uptime_topics,
 )
 from .const import CLIENT_ID, STATE_PREFIX
@@ -37,8 +38,8 @@ def publish_entity_discovery():
 def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
     """Yields sensor discovery topic tuples for a Raspberry Pi device."""
     device = DeviceInfo(
-        name="Vantron",
-        identifiers=["7135376c756a5f2a"],
+        name="Vantron Pi",
+        identifiers=["7135376c756a5f2a", "vantron"],
         model="Raspberry Pi 5",
         manufacturer="Raspberry Pi Foundation",
         connections=[("eth0 mac", "2c:cf:67:6d:e7:58")],
@@ -48,14 +49,15 @@ def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
     yield from cpu_topics(device, include_freq=True)
     yield from load_topics(device)
     yield from memory_topics(device)
+    yield from power_topics(device)
     yield from disk_free_topics(device, DISK_FREE_ROOT_FS)
 
 
 def router_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
     """Yields sensor discovery topic tuples for a router device."""
     device = DeviceInfo(
-        name="Vnet",
-        identifiers=["yx87fec"],
+        name="VNet Networking Hub",
+        identifiers=["yx87fec", "vnet"],
         model="Beryl AX (GL-MT3000)",
         manufacturer="GL.iNet",
         connections=[("eth0 mac", "94:83:c4:58:7f:ec")],
@@ -71,7 +73,7 @@ def router_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
 
 def make_topic_name(device: DeviceInfo, entity_topic: str):
     """Creates a callable that returns a formatted MQTT topic string."""
-    topic = f"collectd/{spinalcase(device.name)}/{entity_topic}"
+    topic = f"collectd/{spinalcase(_nn_(device.identifiers)[-1])}/{entity_topic}"
     return functools.partial(lambda _, topic: topic, topic=topic)
 
 

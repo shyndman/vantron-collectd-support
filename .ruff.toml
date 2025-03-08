@@ -13,8 +13,10 @@ select = [
 ]
 ignore = [
     "C901", # too complex
-    "D100",
     "D103",
+    "D100",
+    "D101", 
+    "D102",
     "D104",
     "D401", # imperative mood
     "W191", # indentation contains tabs
