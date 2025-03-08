@@ -42,6 +42,7 @@ class VoltageCurrentSystemSample:
 
 
 def read_power_consumption(data=None):
+    """Read power consumption and push it to collectd."""
     ts = math.floor(time.time())
     samples = parse_vcgencmd_output(call_vcgencmd())
     power_consumed_w = compute_power_consumption(samples)
@@ -51,6 +52,7 @@ def read_power_consumption(data=None):
 
 
 def call_vcgencmd():
+    """Call the vcgencmd command to read power metrics."""
     try:
         cmd_out = str(subprocess.check_output(args=["vcgencmd", "pmic_read_adc"], encoding="utf8"))
     except:
@@ -60,6 +62,7 @@ def call_vcgencmd():
 
 
 def parse_vcgencmd_output(cmd_out: str) -> List[VoltageCurrentSystemSample]:
+    """Parse the output of the vcgencmd command."""
     sample_map: Dict[str, VoltageCurrentSystemSample] = {}
     for m in [_nn_(SAMPLE_PARSE_PATTERN.match(line)) for line in cmd_out.splitlines()]:
         name, unit, value = m["sys"], m["unit"], float(m["value"])
@@ -75,6 +78,7 @@ def parse_vcgencmd_output(cmd_out: str) -> List[VoltageCurrentSystemSample]:
 
 
 def compute_power_consumption(samples: List[VoltageCurrentSystemSample]) -> float:
+    """Compute power consumption from voltage and current samples."""
     measured_power = sum(s.power_w for s in samples)
     # The PMIC does not report all power consumption, however, it has been
     # found that it can be used to approximate the total consumption.

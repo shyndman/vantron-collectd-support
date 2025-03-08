@@ -22,6 +22,7 @@ COLLECTD_CONFIG_PATH = "/etc/collectd/collectd.conf.d/vantron.collectd.conf"
 
 
 def run():
+    """Install the CollectD plugin."""
     logger.info("Installing CollectD plugin")
 
     conf = importlib.resources.read_text(conf_package, COLLECTD_CONFIG_RESOURCE_BASENAME)
@@ -46,6 +47,7 @@ def run():
 
 
 def write_conf(formatted_conf):
+    """Write the formatted configuration to the collectd config path."""
     logger.info(f"Config:\n\n{formatted_conf}")
     try:
         logger.info(f"Writing to {COLLECTD_CONFIG_PATH}")
@@ -58,4 +60,5 @@ def write_conf(formatted_conf):
 
 
 def find_src_dir() -> Path:
+    """Find the source directory of the vantron package."""
     return Path(inspect.getfile(vantron_package)).parents[1].resolve()
