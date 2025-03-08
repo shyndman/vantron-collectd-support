@@ -53,6 +53,14 @@ def uptime_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicP
 def cpu_topics(
     device: DeviceInfo, include_freq=False, include_fan_speed=False
 ) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """
+    Generates MQTT sensor topics for CPU metrics.
+    
+    This generator yields tuples pairing CPU sensor configurations with their corresponding MQTT state topic paths.
+    The generated sensors cover CPU usage percentages (user, interrupt, soft IRQ, steal, idle, wait, and system)
+    and temperature. Optionally, when include_freq or include_fan_speed are True, additional topics for CPU frequency
+    and fan speed are produced.
+    """
     shared_args = {
         "device": device,
         "unit_of_measurement": "%",
@@ -138,6 +146,13 @@ def cpu_topics(
 
 
 def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """
+    Generates MQTT sensor topics for system load averages.
+    
+    Yields sensor topics for the 1, 5, and 15 minute load averages. Each sensor is populated with common
+    attributes (including the device, measurement unit, display precision, and chart histogram icon) and uses a
+    value template that scales the corresponding raw load value by 100. The state topic for all load sensors is 'load/load'.
+    """
     shared_args = {
         "device": device,
         "unit_of_measurement": "%",
