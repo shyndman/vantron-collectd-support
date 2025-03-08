@@ -23,7 +23,7 @@ from .const import CLIENT_ID, STATE_PREFIX
 
 
 def publish_entity_discovery():
-    """Publishes MQTT discovery topics for CollectD sensors."""
+    """Publish MQTT discovery topics for CollectD sensors."""
     logger.info("Adding CollectD Discovery Topics")
 
     mqtt = Settings.MQTT(host="0.0.0.0", client_name=CLIENT_ID, state_prefix=STATE_PREFIX)
@@ -36,15 +36,7 @@ def publish_entity_discovery():
 
 
 def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
-    """
-    Yields sensor discovery topic tuples for a Raspberry Pi device.
-    
-    This generator creates a DeviceInfo instance for a Raspberry Pi equipped with
-    unique identifiers, model, manufacturer, and network connection details. It
-    yields tuples of sensor discovery topics for system uptime, CPU metrics (including
-    frequency and fan speed), load, memory, power, and disk free space for the root
-    filesystem.
-    """
+    """Yield sensor discovery topic tuples for a Raspberry Pi device."""
     device = DeviceInfo(
         name="Vantron Pi",
         identifiers=["7135376c756a5f2a", "vantron"],
@@ -62,7 +54,7 @@ def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
 
 
 def router_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
-    """Yields sensor discovery topic tuples for a router device."""
+    """Yield sensor discovery topic tuples for a router device."""
     device = DeviceInfo(
         name="VNet Networking Hub",
         identifiers=["yx87fec", "vnet"],
@@ -80,13 +72,13 @@ def router_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
 
 
 def make_topic_name(device: DeviceInfo, entity_topic: str):
-    """Creates a callable that returns a formatted MQTT topic string."""
+    """Create a callable that returns a formatted MQTT topic string."""
     topic = f"collectd/{spinalcase(_nn_(device.identifiers)[-1])}/{entity_topic}"
     return functools.partial(lambda _, topic: topic, topic=topic)
 
 
 def build_discoverable(entity: EntityInfo, mqtt: Settings.MQTT, topic_gen):
-    """Creates a discoverable MQTT sensor entity based on the provided entity type."""
+    """Create a discoverable MQTT sensor entity based on the provided entity type."""
     match entity:
         case SensorInfo():
             return Sensor(Settings(mqtt=mqtt, entity=entity), make_state_topic=topic_gen)

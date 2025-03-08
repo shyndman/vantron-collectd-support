@@ -13,6 +13,7 @@ type StateTopicPath = str
 
 
 def _populate(entity: EntityInfo):
+    """Populate entity attributes for MQTT discovery."""
     entity.object_id = spinalcase(entity.name.lower())
     device = _nn_(entity.device)
     entity.unique_id = spinalcase(f"{_nn_(device.identifiers)[-1]} {entity.name}".lower())
@@ -23,10 +24,12 @@ def _populate(entity: EntityInfo):
 
 
 def _value_template_for_index(i: int, cast_expr: str = " | float(0.0)", transform_expr: str = "") -> str:
+    """Generate a value template for a specific index."""
     return f"{{{{ value.split(':')[{i}].split('\0')[0] {cast_expr} {transform_expr} }}}}"
 
 
 def uptime_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """Generate uptime topics for MQTT discovery."""
     yield (
         _populate(
             SensorInfo(
@@ -53,14 +56,7 @@ def uptime_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicP
 def cpu_topics(
     device: DeviceInfo, include_freq=False, include_fan_speed=False
 ) -> Generator[tuple[EntityInfo, StateTopicPath]]:
-    """
-    Generates MQTT sensor topics for CPU metrics.
-    
-    This generator yields tuples pairing CPU sensor configurations with their corresponding MQTT state topic paths.
-    The generated sensors cover CPU usage percentages (user, interrupt, soft IRQ, steal, idle, wait, and system)
-    and temperature. Optionally, when include_freq or include_fan_speed are True, additional topics for CPU frequency
-    and fan speed are produced.
-    """
+    """Generate CPU topics for MQTT discovery."""
     shared_args = {
         "device": device,
         "unit_of_measurement": "%",
@@ -146,13 +142,7 @@ def cpu_topics(
 
 
 def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
-    """
-    Generates MQTT sensor topics for system load averages.
-    
-    Yields sensor topics for the 1, 5, and 15 minute load averages. Each sensor is populated with common
-    attributes (including the device, measurement unit, display precision, and chart histogram icon) and uses a
-    value template that scales the corresponding raw load value by 100. The state topic for all load sensors is 'load/load'.
-    """
+    """Generate load topics for MQTT discovery."""
     shared_args = {
         "device": device,
         "unit_of_measurement": "%",
@@ -177,6 +167,7 @@ def load_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPat
 
 
 def memory_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """Generate memory topics for MQTT discovery."""
     shared_args = {
         "device": device,
         "unit_of_measurement": "%",
@@ -205,6 +196,7 @@ def memory_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicP
 
 
 def power_topics(device: DeviceInfo) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """Generate power topics for MQTT discovery."""
     yield (
         _populate(
             SensorInfo(
@@ -225,6 +217,7 @@ def disk_free_topics(
     device: DeviceInfo,
     fs_name: str,
 ) -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """Generate disk free topics for MQTT discovery."""
     shared_args = {
         "device": device,
         "device_class": SensorDeviceClass.DATA_SIZE,
@@ -250,6 +243,7 @@ def disk_free_topics(
 
 
 def network_topics(device: DeviceInfo, ping_host="1.1.1.1") -> Generator[tuple[EntityInfo, StateTopicPath]]:
+    """Generate network topics for MQTT discovery."""
     yield (
         _populate(
             BinarySensorInfo(
