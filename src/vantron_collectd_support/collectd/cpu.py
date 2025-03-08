@@ -8,17 +8,13 @@ _SYSTEM_CPU_FAN_SPEED_PATH = "/sys/devices/platform/cooling_fan/hwmon/hwmon3/fan
 
 
 def read_cpu_metrics(data=None):
-    """
-    Read CPU metrics and push them to collectd.
-    """
+    """Read CPU metrics and push them to collectd."""
     _push_fan_speed()
     _push_clock_frequency()
 
 
 def _push_fan_speed():
-    """
-    Push CPU fan speed to collectd.
-    """
+    """Push CPU fan speed to collectd."""
     with open(_SYSTEM_CPU_FAN_SPEED_PATH, "r") as f:
         ts = math.floor(time.time())
         fan_speed = int(f.readline())
@@ -29,9 +25,7 @@ def _push_fan_speed():
 
 
 def _push_clock_frequency():
-    """
-    Push CPU clock frequency to collectd.
-    """
+    """Push CPU clock frequency to collectd."""
     with open(_SYSTEM_CPU_CLOCK_FREQUENCY_PATH, "r") as f:
         ts = math.floor(time.time())
         cpu_frequency = int(f.readline())

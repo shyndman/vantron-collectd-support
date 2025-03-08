@@ -5,9 +5,7 @@ from .power import read_power_consumption
 
 
 def configure_plugin(event: collectd.Config, data: object | None = None):
-    """
-    Configure the Vantron plugin for collectd.
-    """
+    """Configure the Vantron plugin for collectd."""
     collectd.info("Setting up Vantron plugin")
 
 
