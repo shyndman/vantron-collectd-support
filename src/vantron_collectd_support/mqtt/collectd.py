@@ -5,7 +5,7 @@ from ha_mqtt_discoverable.device_class import BinarySensorDeviceClass, SensorDev
 from ha_mqtt_discoverable.sensors import BinarySensorInfo, DeviceInfo, EntityInfo, SensorInfo
 from stringcase import capitalcase, spinalcase
 
-from vantron_collectd_support.util import _nn_
+from ..util import _nn_
 
 DISK_FREE_ROOT_FS = "root"
 type StateTopicPath = str
