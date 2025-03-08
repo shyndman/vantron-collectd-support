@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-add-discovery-topics = "vantron_collectd_support:add_discovery_topics"
+publish-discovery-topics = "vantron_collectd_support.hass:publish_entity_discovery"
 
 [build-system]
 requires = ["hatchling"]
