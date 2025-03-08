@@ -46,7 +46,7 @@ def pi_sensors() -> Generator[tuple[EntityInfo, StateTopicPath]]:
     )
 
     yield from uptime_topics(device)
-    yield from cpu_topics(device, include_freq=True)
+    yield from cpu_topics(device, include_freq=True, include_fan_speed=True)
     yield from load_topics(device)
     yield from memory_topics(device)
     yield from power_topics(device)
