@@ -13,11 +13,11 @@ select = [
 ]
 ignore = [
     "C901", # too complex
-    "W191", # indentation contains tabs
-    "D401", # imperative mood
+    "D100",
     "D103",
     "D104",
-    "D100",
+    "D401", # imperative mood
+    "W191", # indentation contains tabs
 ]
 
 [lint.pydocstyle]
