@@ -23,7 +23,7 @@ jobs:
           uv.lock
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version-file: "pyproject.toml"  # Use Python version from requires-python
 
