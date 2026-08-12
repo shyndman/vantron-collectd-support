@@ -25,7 +25,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
-        python-version-file: "pyproject.toml"  # Use Python version from requires-python
+        python-version: "3.13"
 
     - name: Install dependencies
       run: uv sync --all-extras --dev
